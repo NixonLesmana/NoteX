@@ -17,6 +17,7 @@ def mysql_uri() -> str:
 class Config:
     SQLALCHEMY_DATABASE_URI = mysql_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET", "88")
 
 def db_connection():
     uri = Config.SQLALCHEMY_DATABASE_URI
