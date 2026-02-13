@@ -25,14 +25,22 @@ def create_app():
     jwt.init_app(app)
 
     # Import user model
-    from app.models import user  
+    from app.models import user, notes
 
     # Route registration
     from app.routes.base_routes import base
     from app.routes.auth_routes import register_bp, login_bp
+    from app.routes.user_routes import user_bp
+    from app.routes.upload_routes import file_bp
+    from app.routes.notes_routes import notes_bp
+    from app.routes.like_routes import like_bp
     
     app.register_blueprint(base, url_prefix="/")
     app.register_blueprint(register_bp, url_prefix="/api/v1/register")
     app.register_blueprint(login_bp, url_prefix="/api/v1/login")
-    
+    app.register_blueprint(user_bp, url_prefix="/api/v1/user")
+    app.register_blueprint(file_bp, url_prefix="/uploads")
+    app.register_blueprint(notes_bp, url_prefix="/api/v1/notes")
+    app.register_blueprint(like_bp, url_prefix="/api/v1/like")
+
     return app

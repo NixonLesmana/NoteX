@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
+from datetime import timedelta
 
 load_dotenv()
 
@@ -18,6 +19,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = mysql_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET", "88")
+    
+    # Expire the access token after 8 hours
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=8)
 
 def db_connection():
     uri = Config.SQLALCHEMY_DATABASE_URI

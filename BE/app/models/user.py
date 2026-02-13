@@ -16,6 +16,12 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    # Relationship to Note model
+    notes = db.relationship("Note", back_populates="users", lazy=True)
+
+    # Relationship to Like model
+    likes = db.relationship("Like", back_populates="user", lazy=True)
+
     # To decode password hash, use bcrypt's check_password_hash method
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -23,3 +29,19 @@ class User(db.Model):
     # Compare user's password with the stored hash
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
+
+    def to_json(self, include_notes=True, include_likes=False):
+        data = {
+            "username": self.username,
+            "email": self.email,
+            "profile_img": self.profile_img,
+            "thumbnail_img": self.thumbnail_img,
+            "created_at": self.created_at.isoformat()
+        }
+        # Include notes if requested
+        if include_notes:
+            data["notes"] = [note.to_json(include_user=False) for note in self.notes]
+        # Include likes if requested
+        if include_likes:
+            data["likes"] = [like.to_json(include_user=False, include_note=True) for like in self.likes]
+        return data
