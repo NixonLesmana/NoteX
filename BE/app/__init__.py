@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -23,6 +24,16 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     jwt.init_app(app)
+
+    # Configure CORS to allow requests from the frontend
+    CORS(
+        app,
+        resource={r"/api/*": ["http://localhost:3000", "http://127.0.0.1:3000"]},
+        support_credentials=True,
+        methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Content-type", "Authorization", "X-CSRF-token"],
+        expose_headers=["Content-type"],
+    )
 
     # Import user model
     from app.models import user, notes

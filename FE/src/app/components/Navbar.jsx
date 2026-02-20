@@ -1,9 +1,14 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { RiSearchLine } from 'react-icons/ri';
+import { Button } from 'antd';
+import { AuthModal } from './modal/AuthModal';
 
 
 const Navbar = () => {
+
+    const [showModalAuth, setShowModalAuth] = useState(false);
     return (
         <header className="bg-white">
             <div className="mx-auto flex h-18 items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
@@ -28,13 +33,19 @@ const Navbar = () => {
 
                     <div className="flex items-center gap-4">
                         <div className="sm:flex sm:gap-4">
-                        <a className="block rounded-md bg-white border border-neutral-600 px-5 py-2.5 text-sm font-medium text-neutral transition hover:bg-(--secondary-color) hover:text-white" href="#">
+                        <Button 
+                            className="block rounded-md bg-white border border-neutral-600 px-5 py-2.5 text-sm font-medium text-neutral transition hover:bg-(--secondary-color) hover:text-white" 
+                            onClick={() => setShowModalAuth(true)}
+                        >
                             Login
-                        </a>
+                        </Button>
 
-                        <a className="hidden rounded-md px-5 py-2.5 text-sm font-medium text-white bg-(--secondary-color) transition hover:bg-(--secondary-dark-color) sm:block" href="#">
+                        <Button 
+                            className="hidden rounded-md px-5 py-2.5 text-sm font-medium text-white bg-(--secondary-color) transition hover:bg-(--secondary-dark-color) sm:block" 
+                            onClick={() => setShowModalAuth(true)}
+                        >
                             Register
-                        </a>
+                        </Button>
                         </div>
 
                         <button className="block rounded-sm bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-600/75 md:hidden">
@@ -47,6 +58,7 @@ const Navbar = () => {
 
                 </div>
             </div>
+            <AuthModal open={showModalAuth} onClose={ () => setShowModalAuth(false)} />
         </header>
     )
 }
