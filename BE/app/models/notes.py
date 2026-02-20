@@ -11,6 +11,7 @@ class Note(db.Model):
 
     # Fields
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    int_id = db.Column(db.Integer, autoincrement=True, unique=True, index=True)
     user_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     slug = db.Column(db.String(255), nullable=False)
@@ -51,6 +52,7 @@ class Note(db.Model):
     def to_json(self, include_user=True, include_likes=True):
         data = {
             "id": self.id,
+            "int_id": self.int_id,
             "title": self.title,
             "slug": self.slug,
             "content": self.content,
