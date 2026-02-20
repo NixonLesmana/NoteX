@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NoteCreateModal } from "./modal/NoteCreateModal";
 import { RiEarthLine, RiFolderOpenLine, RiUserHeartLine, RiUserLine } from "react-icons/ri";
 
 const Sidebar = () => {
@@ -14,6 +15,8 @@ const Sidebar = () => {
         {label: "My Favorites", href: "/favorites", icon: <RiUserHeartLine size={20}/>},
         {label: "Profile", href: "/profile", icon: <RiUserLine size={20}/>}
     ];
+
+    const [showModalCreate, setShowModalCreate] = useState(false);
 
     const isActive = (href) => (href === "/" ? path === href : path.startsWith(href));
 
@@ -58,11 +61,14 @@ const Sidebar = () => {
                     <button
                         type='button'
                         className='inline-flex items-center justify-center h-12 w-full rounded-full bg-(--secondary-color) text-white font-medium transition py-4 hover:bg-(--secondary-dark-color) duration-150 cursor-pointer'
+                        onClick={() => setShowModalCreate(true)}
                     >
                         Upload Notes
                     </button>
                 </nav>
             </div>
+
+            <NoteCreateModal open={showModalCreate} onClose={() => setShowModalCreate(false)} onCreated={() => setShowModalCreate(false)}/>
         </aside>
     )
 }

@@ -1,14 +1,12 @@
 @import "tailwindcss";
-
+/* DELETE THE COMMENT */
 @theme {
   --primary-color: #F9CA24;
   --primary-light-color: #FEF5E6;
-  /* yang gw tambah */
   --primary-dark-color: #D18700;
 
   --secondary-color: #0682DF;
   --secondary-light-color: #E6F4FF;
-  /* yang gw tambah */
   --secondary-dark-color: #0565AE;
 
   --accent-purple-color: #955CBC;
