@@ -10,22 +10,20 @@ function isEmptyHtml (html) {
     return text.length === 0;
 }
 
-export const NoteCreateModal = ({ open, onClose, onCreated }) => {
-    
+export const NoteEditModal = ({ open, onClose, note, onUpdated }) => {
     const [status, setStatus] = useState('public');
     const [loading, setLoading] = useState(false);
-    const formKey = open ? 'open' : 'closed';
-
+    
     const { token } = useAuth();
-    const { createNote } = useNote();
+    const { update } = useNote();
 
     useEffect(() => {
         if(!open) {
-            setStatus('public');
+            setStatus(note?.status || 'public');
         }
-    }, [open]);
+    }, [open, note?.status]);
 
-    async function onFinishCreateNote(values) {
+    async function onFinishUpdateNote(values) {
         try {
             if(!token) {
                 message.warning("You need to login to create a note");
@@ -40,12 +38,12 @@ export const NoteCreateModal = ({ open, onClose, onCreated }) => {
                 status, 
                 ...(status === 'protected' ? { password: values.password, password_hint: values.password_hint } : {})
             }
-            console.log(payload);
+            
+            const updated = await update(note?.id, payload);
 
-            const note = await createNote(payload);
             message.success("Note created successfully");
             setStatus('public');
-            onCreated?.(note);
+            onUpdated?.(updated);
 
         } catch(e) {
             setLoading(false);
@@ -61,25 +59,34 @@ export const NoteCreateModal = ({ open, onClose, onCreated }) => {
         { label: <span className='inline-flex items-center gap-2'><RiEyeOffLine />Private</span>, value: 'private' },
         { label: <span className='inline-flex items-center gap-2'><RiLockLine />Protected</span>, value: 'protected' },
     ];
+
+    const formKey = `${note?.id || 'note'}-${open ? 'open' : 'closed'}`;
+
     return (
         <Modal
-            title={<span className='text-xl font-semibold'>Let's Own Your Note</span>}
+            title={<span className='text-xl font-semibold'>Edit Your Note</span>}
             open={open}
             onCancel={onClose}
-            okText="Submit"
+            okText="Save"
             centered
             confirmLoading={loading}
             width={640}
             className='!rounded-2xl'
             styles={{ content: { borderRadius: 16}, body: {paddingTop: 8} }}
-            okButtonProps={{ form: "noteCreateModal", htmlType: "submit" }}
+            okButtonProps={{ form: "noteEditForm", htmlType: "submit" }}
         >
             <Form
-                id="noteCreateModal"
+                id="noteEditForm"
                 key={formKey}
-                onFinish={onFinishCreateNote}
+                onFinish={onFinishUpdateNote}
                 preserve={false}
                 layout='vertical'
+                initialValues={{
+                    title: note?.title || '',
+                    content: note?.content || '',
+                    password: undefined,
+                    password_hint: note?.password_hint || undefined
+                }}
             >
                 <Form.Item label="Title" name="title">
                     <Input placeholder='Enter note title (optional)' maxLength={150}/>
@@ -91,7 +98,7 @@ export const NoteCreateModal = ({ open, onClose, onCreated }) => {
                             isEmptyHtml(value) ? Promise.reject(new Error('Content cannot be empty')) : Promise.resolve()
                     }]
                 }>
-                    <RichTextEditor placeholder='Share your thoughts...'/>
+                    <RichTextEditor placeholder='Edit Your Notes...'/>
                 </Form.Item>
 
                 <div className='flex items-center justify-between gap-4'>
