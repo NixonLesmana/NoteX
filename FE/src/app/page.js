@@ -6,14 +6,23 @@ import { useNote } from "./store/useNote";
 import { useAuth } from "./store/useAuth";
 import { colorForNote } from "./utils/color";
 import { colors } from "./constants/colors";
+import { useFavorite } from "./store/useFavorite";
 
 export default function Home() {
+
   const { token } = useAuth();
   const { items, loading, loadPublic } = useNote();
+  const loadFavoriteIds = useFavorite(state => state.loadIds);
 
   useEffect(() => {
     loadPublic({ page: 1, perPage: 12 })
   }, [loadPublic]);
+
+  useEffect(() => {
+    if (token) {
+      loadFavoriteIds().catch(() => {});
+    }
+  } , [token, loadFavoriteIds]);
 
   if (loading) {
     return <div className='py-10 flex justify-center'><Spin /></div>
@@ -22,7 +31,6 @@ export default function Home() {
   if (!items.length) {
     return <div className='py-10'><Empty /></div>
   }
-  console.log("colorForNote:", items.map(n => colorForNote(n, colors)));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
