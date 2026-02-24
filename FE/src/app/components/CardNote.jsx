@@ -1,15 +1,62 @@
 import React from 'react'
 import { Card } from "antd";
-import { Avatar, Tooltip } from 'antd';
+import { Avatar, Tooltip, message } from 'antd';
 import { RiLockLine, RiStarSFill, RiShareForwardFill, RiUser3Line } from 'react-icons/ri';
 import { formatDate } from '../utils/formatDate';
 import { imgUrl } from '../lib/url';
+import { useFavorite } from '../store/useFavorite';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../store/useAuth';
 
-const CardNote = ({ note, bg }) => {
-    const isPrivateLike = note?.status === "private" || note?.status === "protected"
-    const author = note?.user?.username || "Anonymous"
-    const date = formatDate(note?.created_at)
-    const cardBg = bg || 'var(--secondary-light-color)'
+const FRONTEND_BASE = (process.env.NEXT_PUBLIC_FRONTEND_BASE || '').replace(/\/+$/, '') || (typeof window !== 'undefined' ? window.location.origin : '');
+
+const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
+    const { token } = useAuth();
+    const router = useRouter();
+
+    const isPrivateLike = note?.status === "private" || note?.status === "protected";
+    const author = note?.user?.username || "Anonymous";
+    const date = formatDate(note?.created_at);
+    const cardBg = bg || 'var(--secondary-light-color)';
+    const slug = note?.slug || '';
+
+    const redirectToAuth = () => router.push('/?auth=1');
+
+    const favoriteIds = useFavorite(state => state.favoriteIds);
+    const pendingIds = useFavorite(state => state.pendingIds);
+    const toggleFavorite = useFavorite(state => state.toggle);
+
+    const keyId = String(note?.id ?? "");
+    const fav = favoriteIds.has(keyId);
+    const toggling = pendingIds.has(keyId);
+
+    const handleShare = async (event) => {
+        event.stopPropagation();
+        if(!token) {redirectToAuth(); return;}
+
+        const urlShare = `${FRONTEND_BASE}/note/${encodeURIComponent(slug)}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: note?.title || "NoteX",
+                    url: urlShare,
+                });
+                return 
+
+            } catch (error) {
+                console.error("Error sharing");
+            }
+        }
+        try {
+            await navigator.clipboard.writeText(urlShare);
+            message.success("Note URL copied to clipboard!");
+
+        } catch (error) {
+            message.info(urlShare);
+        }
+        
+    }
 
     return (
         <div className='relative'>
@@ -52,22 +99,41 @@ const CardNote = ({ note, bg }) => {
                         }
 
                         <div className='flex flex-col'>
-                            <h4 className='text-base font-semibold truncate'>{note?.user?.username}</h4>
+                            <h4 className='text-base font-semibold truncate'>{author}</h4>
                             <p className='text-xs font-normal'>{date}</p>
                         </div>
                     </div>
 
                     <div className='flex items-center gap-3'>
-                        <Tooltip title={"Private"}>
-                            <RiLockLine size={25} className='text-neutral-600'/>
-                        </Tooltip>
+                        {showPrivateIcon && isPrivateLike && (
+                            <Tooltip title={note?.status === 'protected' ? "Protected" : "Private"}>
+                                <span onClick={e => e.stopPropagation()}>
+                                    <RiLockLine size={25} className='cursor-pointer text-neutral-600'/>
+                                </span>
+                            </Tooltip>
+                        )}
 
-                        <Tooltip title={"Favorite"}>
-                            <RiStarSFill size={25} className='text-neutral-600'/>
+                        <Tooltip title={`${fav ? "Favorited": "Favorite"}`}>
+                            <span
+                                className={`inline-flex ${toggling ? 'opacity-60' : 'opacity-100'}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleFavorite(note.id)
+                                }}
+                                aria-pressed={fav}
+                                data-id={keyId}
+                                data-fav={fav ? '1' : '0'}
+                                key={fav ? `fav-${keyId}` : `unfav-${keyId}`}
+
+                            >
+                                <RiStarSFill size={25} className={`cursor-pointer ${fav ? '!text-(--primary-color)' : '!text-zinc-300'}`}/>
+                            </span>
                         </Tooltip>
 
                         <Tooltip title={"Share"}>
-                            <RiShareForwardFill size={27} className='text-neutral-600'/>
+                            <span onClick={handleShare}>
+                                <RiShareForwardFill size={27} className='cursor-pointer text-neutral-500 hover:text-neutral-700'/>
+                            </span>
                         </Tooltip>                      
                     </div>
                 </div>
