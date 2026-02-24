@@ -9,9 +9,9 @@ export async function loginApi(payload) {
 }
 
 export async function getProfileApi(token) {
-    return api.get("users/", { token });
+    return api.get("user/", { token });
 }
 
 export async function updateUserApi(payload, token) {
-    return api.put("users/", payload, { token });
+    return api.put("user/", payload, { token });
 }
