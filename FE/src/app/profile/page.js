@@ -34,7 +34,7 @@ export default function Profile () {
 
     const display = {
         name: user?.username || "User",
-        avatar: user?.profile_img ? imgUrl(user?.profile_img) : "/assets/profile.jpg",
+        avatar: user?.profile_img ? imgUrl(user?.profile_img) : "/assets/profile.png",
         cover: user?.thumbnail_img ? imgUrl(user?.thumbnail_img) : "/assets/thumbnail.jpeg"
     }
 

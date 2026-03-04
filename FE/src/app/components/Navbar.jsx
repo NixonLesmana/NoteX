@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { RiArrowDownSFill, RiSearchLine } from 'react-icons/ri';
 import { Button, Avatar, Spin, Dropdown } from 'antd';
@@ -17,6 +16,7 @@ const Navbar = () => {
     const { user, isAuthenticated, logout, checkSession } = useAuth();
     const [showModalAuth, setShowModalAuth] = useState(false);
     const [ checking, setChecking ] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     const [ query, setQuery] = useState('');
     const [ open, setOpen ] = useState(false);
@@ -28,6 +28,10 @@ const Navbar = () => {
     const boxRef = useRef(null);
     const inputRef = useRef(null);
     const debounceRef = useRef(null);
+    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         ;(async () => {
@@ -159,9 +163,11 @@ const Navbar = () => {
         <header className="bg-white">
             <div className="mx-auto flex h-18 items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
                 
-                <a className="flex items-center gap-2" href="#">
-                    <Image src="/assets/NoteX_logo.png" alt="logo" width={100} height={100} />
-                    <h2>NoteX</h2>
+                <a className="flex items-center gap-1" href="#">
+                    <Image src="/assets/NoteX_logo.png" alt="logo" width={60} height={55} />
+                    <h2  className='text-xl font-bold tracking-tight text-neutral-900'>
+                        NoteX
+                    </h2>
                 </a>
 
                 <div className="relative" ref={boxRef}>
@@ -270,8 +276,8 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center justify-end">
-                    {
-                        !isAuthenticated() ? (
+                    
+                        {!mounted ? null : !isAuthenticated() ? (
                             <div className="flex items-center gap-4">
                             <Button 
                                 className="block rounded-md bg-white border border-neutral-600 px-5 py-2.5 text-sm font-medium text-neutral transition hover:bg-(--secondary-color) hover:text-white" 
@@ -300,14 +306,14 @@ const Navbar = () => {
 
                                     <Avatar
                                         size={45}
-                                        src={imgUrl(user?.profile_img || '/assets/profile.png')}
+                                        src={user?.profile_img ? imgUrl(user?.profile_img) : '/assets/profile.png'}
                                     />
                                     <RiArrowDownSFill size={22} className='shrink-0' />
 
                                 </button>
                             </Dropdown>
-                        )
-                    }
+                        )}
+                    
 
                 </div>
             </div>
@@ -316,4 +322,4 @@ const Navbar = () => {
     )
 }
 
-export default dynamic(() => Promise.resolve(Navbar), { ssr: false });
+export default Navbar;

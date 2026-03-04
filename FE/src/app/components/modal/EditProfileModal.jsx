@@ -4,7 +4,7 @@ import { useAuth } from '@/app/store/useAuth';
 import { imgUrl } from '@/app/lib/url';
 
 const PLACEHOLDER_THUMBNAIL = '/assets/thumbnail.jpeg'
-const PLACEHOLDER_PROFILE = '/assets/profile.jpg'
+const PLACEHOLDER_PROFILE = '/assets/profile.png'
 
 export const EditProfileModal = ( { open, onClose }) => {
     const { user, updateProfile } = useAuth();
