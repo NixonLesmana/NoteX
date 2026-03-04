@@ -64,7 +64,7 @@ def get_note_slug(slug):
     # Password can be provided as a query parameter or in the JSON body
     password = request.args.get("password")
     if password is None and request.is_json:
-        body = request.get_json()
+        body = request.get_json(silent=True) or {}
         password = body.get("password")
     
     # Get user ID

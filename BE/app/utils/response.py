@@ -17,5 +17,5 @@ def response_error(message="An error occurred", status_code=400, hint=None):
         "message": message
     }
     if hint is not None:
-        response["password hint"] = hint
+        response["password_hint"] = hint
     return jsonify(response), status_code
