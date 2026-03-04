@@ -58,6 +58,17 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
         
     }
 
+    const goDetail = () => {
+        if (slug) router.push(`/note/${encodeURIComponent(slug)}`)
+    }
+
+    const onKeyDetail = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            goDetail()
+        }
+    }
+
     return (
         <div className='relative'>
             <Card
@@ -66,6 +77,8 @@ const CardNote = ({ note, bg, onFavoriteChange, showPrivateIcon = true }) => {
                 styles={{ body: {padding: 16} }}
                 hoverable
                 tabIndex={0}
+                onClick={goDetail}
+                onKeyDown={onKeyDetail}
                 aria-label={note?.title || note?.title !== "Untitled Note" ? `Note titled ${note?.title}` : "Note"}
             >
                 {note?.title !== "Untitled Note" &&(
