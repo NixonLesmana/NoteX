@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { createNoteApi, fetchPublicNotesApi, fetchMyNotesApi, updateNoteApi, searchNotesApi } from "../services/noteService";
+import { createNoteApi, fetchPublicNotesApi, fetchMyNotesApi, updateNoteApi, searchNotesApi, getNoteBySlugApi } from "../services/noteService";
 import { useAuth } from "./useAuth";
+import Password from "antd/es/input/Password";
 
 export const useNote = create((set, get) => ({
     items: [],
@@ -10,6 +11,7 @@ export const useNote = create((set, get) => ({
     loading: false,
     searchResults: [],
     searchLoading: false,
+    detail: null,
 
     async createNote(payload) {
         const auth = useAuth.getState() || {};
@@ -110,5 +112,37 @@ export const useNote = create((set, get) => ({
 
     clearSearch() {
         set({ searchResults: [], error: null })
+    },
+
+    async loadDetail(slug, password) {
+        const auth = useAuth.getState() || {};
+        let token = auth.token || "";
+
+        if(!token) throw new Error("No token found, please login first.");
+        if(token.startsWith("Bearer ")) token = token.slice(7);
+
+        set ({ loading: true, error: null })
+        try {
+            const data = await getNoteBySlugApi(slug, { token, password })
+            set ({ detail: data, loading: false })
+            return { success: true, data }
+
+        } catch (error) {
+            const payload = error?.response?.data || {};
+            const msg = payload?.message || error.message;
+
+            set({ error: msg, loading: false });
+
+            return {
+                success: false,
+                error: msg,
+                password_hint: payload?.password_hint, // ✅ forward the hint
+            };
+        }
+    },
+
+    clearDetail() {
+        set ({ detail: null, error: null })
     }
+
 }))
