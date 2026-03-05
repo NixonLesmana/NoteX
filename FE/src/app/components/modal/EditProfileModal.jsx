@@ -3,7 +3,7 @@ import { Modal, Input, Avatar, Button, Form, message } from 'antd';
 import { useAuth } from '@/app/store/useAuth';
 import { imgUrl } from '@/app/lib/url';
 
-const PLACEHOLDER_THUMBNAIL = '/assets/thumbnail.jpeg'
+const PLACEHOLDER_THUMBNAIL = '/assets/NoteX_thumbnail.png'
 const PLACEHOLDER_PROFILE = '/assets/profile.png'
 
 export const EditProfileModal = ( { open, onClose }) => {

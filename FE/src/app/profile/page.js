@@ -35,7 +35,7 @@ export default function Profile () {
     const display = {
         name: user?.username || "User",
         avatar: user?.profile_img ? imgUrl(user?.profile_img) : "/assets/profile.png",
-        cover: user?.thumbnail_img ? imgUrl(user?.thumbnail_img) : "/assets/thumbnail.jpeg"
+        cover: user?.thumbnail_img ? imgUrl(user?.thumbnail_img) : "/assets/NoteX_thumbnail.png"
     }
 
     const totalUploaded = myItems.length;
@@ -63,8 +63,7 @@ export default function Profile () {
                         {display.name}
                     </h1>
                     <Button
-                        className='!rounded-full !px-4 !h-9 !text-sm !border-(--secondary-color) !text-(--secondary-color)
-                        hover:!bg-(--secondary-color) hover:!text-white transition-all'
+                        className='!rounded-full !px-4 !h-9 !text-sm !border-(--secondary-color) !text-(--secondary-color) hover:!bg-(--secondary-color) hover:!text-white transition-all'
                         onClick={() => setOpenEdit(true)}
                     >
                         Edit Profile

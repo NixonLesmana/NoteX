@@ -164,10 +164,8 @@ const Navbar = () => {
             <div className="mx-auto flex h-18 items-center justify-between gap-8 px-4 sm:px-6 lg:px-8">
                 
                 <a className="flex items-center gap-1" href="#">
-                    <Image src="/assets/NoteX_logo.png" alt="logo" width={60} height={55} />
-                    <h2  className='text-xl font-bold tracking-tight text-neutral-900'>
-                        NoteX
-                    </h2>
+                    <Image src="/assets/NoteX_logo.jpg" alt="logo" width={164} height={108} />
+                    
                 </a>
 
                 <div className="relative" ref={boxRef}>
