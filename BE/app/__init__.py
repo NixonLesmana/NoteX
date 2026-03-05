@@ -28,11 +28,14 @@ def create_app():
     # Configure CORS to allow requests from the frontend
     CORS(
         app,
-        resource={r"/api/*": ["http://localhost:3000", "http://127.0.0.1:3000"]},
-        support_credentials=True,
-        methods=["GET", "POST", "PUT", "DELETE"],
-        allow_headers=["Content-type", "Authorization", "X-CSRF-token"],
-        expose_headers=["Content-type"],
+        resources={r"/api/v1/*": {"origins": [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://notex-one.vercel.app",
+        ]}},
+        supports_credentials=True,
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
     )
 
     # Import user model
