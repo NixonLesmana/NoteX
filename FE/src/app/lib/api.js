@@ -23,7 +23,7 @@ async function apiFetch(
             ...headers
         },
         body: isForm ? body : body ? JSON.stringify(body) : undefined,
-        ...(isBrowser ? { credential: 'include' } : {}),
+        ...(isBrowser ? { credentials: 'include' } : {}),
         cache,
         next : { revalidate }
     }
