@@ -31,7 +31,7 @@ export const useNote = create((set, get) => ({
         }
 
         if (typeof window !== "undefined") {
-            window.dispatchEvent(new CustomEvent("note:created", { detail: note }));
+            window.dispatchEvent(new CustomEvent("note:created", { detail: response.data }));
         }
 
         return response
