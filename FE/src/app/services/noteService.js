@@ -1,7 +1,7 @@
 import { api } from "../lib/api";
 
 export async function createNoteApi(payload, token) {
-    const response = await api.post('notes/', payload, { token });
+    const response = await api.post('/api/v1/notes/', payload, { token });
     return response?.data ?? response;
 }
 
@@ -22,7 +22,7 @@ export async function fetchPublicNotesApi({
     )
     if (q) params.set('q', q);
 
-    const response = await api.get(`notes/?${params.toString()}`);
+    const response = await api.get(`/api/v1/notes/?${params.toString()}`);
     const data = response?.data ?? response;
 
     return {
@@ -48,7 +48,7 @@ export async function fetchMyNotesApi({
     )
     if (q) params.set('q', q);
 
-    const response = await api.get(`notes/me?${params.toString()}`, { token });
+    const response = await api.get(`/api/v1/notes/me?${params.toString()}`, { token });
     const data = response?.data ?? response;
     return{
         items: data ?? [],
@@ -57,7 +57,7 @@ export async function fetchMyNotesApi({
 }
 
 export async function updateNoteApi(id, payload, token) {
-    const response = await api.put(`notes/${id}`, payload, { token });
+    const response = await api.put(`/api/v1/notes/${id}`, payload, { token });
     return response?.json ?? response;
 }
 
@@ -66,14 +66,14 @@ export async function searchNotesApi(q, token) {
 
     if(q) params.set('q', q);
 
-    const response = await api.get(`notes/?${params.toString()}`, { token });
+    const response = await api.get(`/api/v1/notes/?${params.toString()}`, { token });
     const data = response?.data ?? response;
     return Array.isArray(data) ? data : data.items ?? [];
 
 }
 
 export async function getNoteBySlugApi(slug, { token, password } = {}) {
-    const url = `notes/${encodeURIComponent(slug)}` + (password ? `?password=${encodeURIComponent(password)}` : '')
+    const url = `/api/v1/notes/${encodeURIComponent(slug)}` + (password ? `?password=${encodeURIComponent(password)}` : '')
 
     const response = await api.get(url, {
         token
