@@ -153,9 +153,6 @@ https://notex-one.vercel.app/
 
 Nixon Lesmana
 
-GitHub  
-https://github.com/NixonLesmana
-
 ---
 
 ## License
